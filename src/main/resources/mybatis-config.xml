@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <settings>
+        <setting name="logImpl" value="LOG4J2"/>
+    </settings>
+    <!--<typeAliases>-->
+        <!--&lt;!&ndash;<typeAlias type="com.dnsoft.JavaEEChapter09.pojo.Customer" alias="customer"/>&ndash;&gt;-->
+        <!--<package name="com.dnsoft.JavaEEChapter10.pojo"/>-->
+    <!--</typeAliases>-->
+    <!--<mappers>-->
+        <!--<mapper resource="com/dnsoft/JavaEEChapter10/mapper/CustomerMapper.xml"/>-->
+    <!--</mappers>-->
+    <typeAliases>
+        <package name="com.drsoft.JEE.pojo"/>
+    </typeAliases>
+</configuration>

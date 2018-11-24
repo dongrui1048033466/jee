@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drsoft.JEE.dao.UserDao">
+
+   <!--完成版通过密码和帐号查用户-->
+    <select id="findUser" parameterType="String"
+            resultType="user">
+     SELECT *,max(role.rId) as rIds,group_concat(role.role)as roles
+     from user,role,user_role
+     where user.id = user_role.uId and role.rId= user_role.rId
+     and loginName = #{loginName}
+     AND loginPwd = #{loginPwd}
+     group by user.id;
+    </select>
+
+    <select id="findUsers" parameterType="String"
+            resultType="user">
+        SELECT *
+        from user
+        where loginName = #{loginName}
+        AND loginPwd = #{loginPwd}
+    </select>
+   <!--全查完成版-->
+    <select id="queryAll" parameterType="user"
+            resultType="user">
+        select *,group_concat(role.role) as roles
+        from user,role,user_role
+        where user.id = user_role.uId and role.rId= user_role.rId group by user.id;
+    </select>
+    <!--查总数-->
+    <select id="querycount" resultType="Integer">
+       select count(*) as count from user
+    </select>
+
+    <!--完成版更信息-->
+    <update id="update" parameterType="user">
+       UPDATE user
+        <set>
+            <if test="loginName!=null">loginName=#{loginName},</if>
+            <if test="loginPwd!=null">loginPwd=#{loginPwd},</if>
+            <if test="userName!=null">userName=#{userName},</if>
+            <if test="phone!=null">phone=#{phone},</if>
+            <if test="idCard!=null">idCard=#{idCard},</if>
+            <if test="email!=null">email=#{email},</if>
+            <if test="sex!=null">sex=#{sex},</if>
+            <if test="isDelete!=null"> isDelete=#{isDelete},</if>
+            <if test="isDelete==null"> isDelete=0,</if>
+        </set>
+              where id=#{id}
+    </update>
+
+    <!--添加完成版-->
+    <insert id="add" parameterType="user">
+      INSERT INTO user(
+                     loginName,
+                     loginPwd,
+                     userName,
+                     phone,
+                     email,
+                     idCard,
+                     sex,
+                     isDelete
+                   )
+                   VALUES (
+                     #{loginName},
+                     #{loginPwd},
+                     #{userName},
+                     #{phone},
+                     #{email},
+                     #{idCard},
+                     #{sex},
+                     0
+                     )
+
+
+    </insert>
+<!--删除-->
+    <delete id="delete" parameterType="Integer">
+        DELETE FROM user WHERE id= #{id}
+    </delete>
+
+<!--通过id查用户-->
+    <select id="queryById" parameterType="Integer"
+            resultType="user">
+      SELECT *,max(role.rId) as rIds,group_concat(role.role)as roles
+      from user,role,user_role
+      where user.id = user_role.uId and role.rId= user_role.rId
+      and id= #{id}
+      group by user.id;
+    </select>
+<!--通过id查用户权限-->
+    <select id="queryjurById" parameterType="Integer"
+            resultType="user">
+       select *,group_concat(role.role) as roles,group_concat(jurisdiction.jId)AS jIds
+        from user,role,user_role,jurisdiction,jurisdiction_role
+        where user.id = user_role.uId and role.rId= user_role.rId  and jurisdiction.jId= jurisdiction_role.jId and role.rId = jurisdiction_role.rId
+        and id=#{id}
+        group by user.id;
+    </select>
+
+
+    <select id="queryByEmail" parameterType="String"
+            resultType="user">
+        SELECT * FROM user WHERE email= #{value}
+    </select>
+
+    <select id="queryByLoginName" parameterType="String"
+            resultType="user">
+        SELECT * FROM user WHERE loginName= #{value}
+    </select>
+
+    <select id="getUsers" parameterType="String"
+            resultType="user">
+        SELECT *,max(role.rId) as rIds,group_concat(role.role)as roles
+        from user,role,user_role
+        where user.id = user_role.uId and role.rId= user_role.rId and
+        <if test="loginName!=null">loginName like "%${loginName}%"</if>
+        and
+        <if test="userName!=null">userName like "%${userName}%"</if>
+        group by user.id;
+ </select>
+
+</mapper>
+

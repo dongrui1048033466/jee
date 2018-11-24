@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drsoft.JEE.dao.RoleDao">
+
+    <!--添加完成版-->
+    <insert id="add" parameterType="Integer">
+        INSERT INTO user_role(
+         uId,
+         rId
+        )
+        VALUES (
+       #{uId},
+        #{rId}
+        )
+ </insert>
+    <insert id="addTorole" parameterType="role">
+        INSERT INTO role
+        (
+        role,
+        content
+        )
+        VALUES (
+        #{role},
+        #{content}
+        )
+    </insert>
+    <insert id="addByrole" parameterType="role">
+        INSERT INTO jurisdiction_role
+        (
+        rId,
+        jId
+        )
+        VALUES (
+        #{rId},
+        #{jId}
+        )
+    </insert>
+    <!--完成版更信息-->
+    <update id="update" parameterType="Integer">
+        UPDATE user_role
+        <set>
+            <if test="uId!=null">uId=#{uId},</if>
+            <if test="rId!=null">rId=#{rId},</if>
+        </set>
+        where u_rId=#{u_rId}
+    </update>
+    <update id="updateTorole" parameterType="role">
+        UPDATE role
+        <set>
+            <if test="role!=null">role=#{role},</if>
+            <if test="content!=null">content=#{content},</if>
+        </set>
+        where rId=#{rId}
+    </update>
+    <!--查询角色-->
+    <select id="findRole" parameterType="Integer"
+            resultType="role">
+        SELECT *
+        from user_role
+        where uId = #{uId}
+    </select>
+    <!--查询角色-->
+    <select id="findRoleByrole" parameterType="String"
+            resultType="role">
+        SELECT *
+        from role
+        where role = #{role}
+    </select>
+    <!--全查角色-->
+    <select id="queryAll" parameterType="role"
+            resultType="role">
+       SELECT *
+       from role
+    </select>
+    <!--全查权限-->
+    <select id="queryAllTojur" parameterType="role"
+            resultType="role">
+        SELECT *
+        from jurisdiction
+    </select>
+    <!--全查角色权限联合-->
+    <select id="queryAllTo" parameterType="role"
+            resultType="role">
+       SELECT *,group_concat(jurisdiction.jurisdiction)as jurisdictions
+       from jurisdiction,role,jurisdiction_role
+      where jurisdiction.jId=jurisdiction_role.jId AND
+      role.rId = jurisdiction_role.rId
+      group by role.rId;
+    </select>
+    <!-- 删除分配的角色-->
+    <delete id="delete" parameterType="Integer">
+        DELETE FROM user_role WHERE uId= #{id}
+    </delete>
+    <!-- 删除分配的角色-->
+    <delete id="deleteByrId" parameterType="Integer">
+        DELETE FROM role WHERE rId= #{rId}
+    </delete>
+    <!-- 删除分配的角色权限-->
+    <delete id="deleteTorId" parameterType="Integer">
+        DELETE FROM jurisdiction_role WHERE rId= #{rId}
+    </delete>
+    <!--查总数-->
+    <select id="querycount" resultType="Integer">
+        select count(*) as count from role
+    </select>
+    <!--模糊查询-->
+    <select id="getRoles" parameterType="String"
+            resultType="role">
+        SELECT *,group_concat(jurisdiction.jurisdiction)as jurisdictions
+        from jurisdiction,role,jurisdiction_role
+        where jurisdiction.jId=jurisdiction_role.jId
+        AND role.rId = jurisdiction_role.rId
+        AND <if test="Role!=null">role like "%${Role}%"</if>
+        group by role.rId;
+    </select>
+</mapper>
+
+
